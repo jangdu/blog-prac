@@ -7,9 +7,8 @@ connect();
 
 app.use(express.json());
 
-// const goodsRouter = require("./routes/goods");
-// const cartsRouter = require("./routes/carts");
-// app.use("/api", [goodsRouter, cartsRouter]);
+const postsRouter = require("./routes/posts");
+app.use("/posts", postsRouter);
 
 app.get("/", (req, res) => {
   res.send("hello, world!");
