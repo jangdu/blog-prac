@@ -19,21 +19,50 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { user, password, title, content } = req.body;
+  try {
+    const { user, password, title, content } = req.body;
 
-  if (!(user && password && title && content)) {
-    return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    if (!(user && password && title && content)) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
+    const createdPost = await Posts.create({
+      postId: uuidv4(),
+      user,
+      password,
+      title,
+      content,
+    });
+    console.log(createdPost);
+
+    res.json({ message: "게시글을 생성하였습니다." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "데이터 형식이 올바르지 않습니다." });
   }
-  const createdPost = await Posts.create({
-    postId: uuidv4(),
-    user,
-    password,
-    title,
-    content,
-  });
-  console.log(createdPost);
+});
 
-  res.json({ message: "게시글을 생성하였습니다." });
+router.get("/:postId", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await Posts.findOne({ postId });
+
+    if (!post) {
+      return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
+    }
+
+    res.json({
+      data: {
+        postId,
+        user: post.user,
+        title: post.title,
+        content: post.content,
+        createdAt: post.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "데이터 형식이 올바르지 않습니다." });
+  }
 });
 
 module.exports = router;
