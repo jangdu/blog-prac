@@ -6,11 +6,11 @@ const postsSchema = new mongoose.Schema(
     postId: {
       type: String,
       default: uuidv4,
+      unique: true,
     },
     user: {
       type: String,
       require: true,
-      unique: true,
     },
     password: {
       type: String,
