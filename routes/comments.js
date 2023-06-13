@@ -74,9 +74,34 @@ router.put("/:commentId", async (req, res) => {
     if (comment.password === password) {
       await Comments.updateOne({ commentId }, { $set: { content } });
     } else {
-      return res.status(404).json({ message: "비밀번호가 올바르지 않음" });
+      return res.status(401).json({ message: "비밀번호가 올바르지 않음" });
     }
     res.json({ message: "댓글을 수정하였습니다." });
+  } catch (error) {
+    return res.status(500).json({ error, message: "서버오류" });
+  }
+});
+
+router.delete("/:commentId", async (req, res) => {
+  try {
+    const { commentId } = req.params;
+    const { password } = req.body;
+
+    const comment = await Comments.findOne({ commentId });
+
+    if (!(password && commentId)) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
+    if (!comment) {
+      return res.status(404).json({ message: "댓글 조회에 실패하였습니다." });
+    }
+
+    if (comment.password === password) {
+      await Comments.deleteOne({ commentId });
+    } else {
+      return res.status(401).json({ message: "비밀번호가 올바르지 않음" });
+    }
+    res.json({ message: "댓글을 삭제하였습니다." });
   } catch (error) {
     return res.status(500).json({ error, message: "서버오류" });
   }
