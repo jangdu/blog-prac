@@ -28,4 +28,31 @@ router.get("/:postId", async (req, res) => {
   }
 });
 
+router.post("/:postId", async (req, res) => {
+  try {
+    const { user, password, content } = req.body;
+    const { postId } = req.params;
+
+    if (!content) {
+      return res.status(400).json({ errorMessage: "댓글 내용을 입력해주세요" });
+    }
+
+    if (!(user && password && postId)) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
+    const createdPost = await Comments.create({
+      postId,
+      user,
+      password,
+      commentId: uuidv4(),
+      content,
+    });
+
+    res.json({ message: "댓글을 생성하였습니다." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error, message: "서버오류" });
+  }
+});
+
 module.exports = router;
