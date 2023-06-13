@@ -4,18 +4,22 @@ const router = express.Router();
 const Posts = require("../schemas/posts");
 
 router.get("/", async (req, res) => {
-  const posts = await Posts.find();
+  try {
+    const posts = await Posts.find();
 
-  const postsData = posts.map((data) => {
-    return {
-      postId: data.postId,
-      user: data.user,
-      title: data.title,
-      createdAt: data.createdAt,
-    };
-  });
+    const postsData = posts.map((data) => {
+      return {
+        postId: data.postId,
+        user: data.user,
+        title: data.title,
+        createdAt: data.createdAt,
+      };
+    });
 
-  res.json({ data: postsData });
+    res.json({ data: postsData });
+  } catch (error) {
+    res.status(500).json({ error, message: "서버오류" });
+  }
 });
 
 router.post("/", async (req, res) => {
@@ -36,7 +40,7 @@ router.post("/", async (req, res) => {
     res.json({ message: "게시글을 생성하였습니다." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "데이터 형식이 올바르지 않습니다." });
+    res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -59,7 +63,7 @@ router.get("/:postId", async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "데이터 형식이 올바르지 않습니다." });
+    res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -84,7 +88,7 @@ router.put("/:postId", async (req, res) => {
     }
     res.json({ message: "게시글을 수정하였습니다." });
   } catch (error) {
-    res.status(500).json({ message: "데이터 형식이 올바르지 않습니다." });
+    res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -110,7 +114,7 @@ router.delete("/:postId", async (req, res) => {
 
     res.json({ message: "게시글을 삭제 하였습니다." });
   } catch (error) {
-    res.status(500).json({ message: "데이터 형식이 올바르지 않습니다." });
+    res.status(500).json({ error, message: "서버오류" });
   }
 });
 
