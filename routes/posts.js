@@ -16,9 +16,9 @@ router.get("/", async (req, res) => {
       };
     });
 
-    res.json({ data: postsData });
+    return res.status(200).json({ data: postsData });
   } catch (error) {
-    res.status(500).json({ error, message: "서버오류" });
+    return res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -37,10 +37,9 @@ router.post("/", async (req, res) => {
       content,
     });
 
-    res.json({ message: "게시글을 생성하였습니다." });
+    return res.status(201).json({ message: "게시글을 생성하였습니다." });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error, message: "서버오류" });
+    return res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -53,7 +52,7 @@ router.get("/:postId", async (req, res) => {
       return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
     }
 
-    res.json({
+    return res.status(200).json({
       data: {
         postId,
         user: post.user,
@@ -63,7 +62,7 @@ router.get("/:postId", async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error, message: "서버오류" });
+    return res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -86,9 +85,9 @@ router.put("/:postId", async (req, res) => {
     } else {
       return res.status(401).json({ message: "비빌번호가 올바르지 않습니다." });
     }
-    res.json({ message: "게시글을 수정하였습니다." });
+    return res.status(200).json({ message: "게시글을 수정하였습니다." });
   } catch (error) {
-    res.status(500).json({ error, message: "서버오류" });
+    return res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -112,9 +111,9 @@ router.delete("/:postId", async (req, res) => {
       return res.status(401).json({ message: "비빌번호가 올바르지 않습니다." });
     }
 
-    res.json({ message: "게시글을 삭제 하였습니다." });
+    return res.status(200).json({ message: "게시글을 삭제 하였습니다." });
   } catch (error) {
-    res.status(500).json({ error, message: "서버오류" });
+    return res.status(500).json({ error, message: "서버오류" });
   }
 });
 

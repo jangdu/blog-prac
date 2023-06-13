@@ -22,9 +22,9 @@ router.get("/:postId", async (req, res) => {
       };
     });
 
-    res.json({ data: commentsData });
+    return res.status(200).json({ data: commentsData });
   } catch (error) {
-    res.status(500).json({ error, message: "서버오류" });
+    return res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -49,9 +49,9 @@ router.post("/:postId", async (req, res) => {
       content,
     });
 
-    res.json({ message: "댓글을 생성하였습니다." });
+    return res.status(201).json({ message: "댓글을 생성하였습니다." });
   } catch (error) {
-    res.status(500).json({ error, message: "서버오류" });
+    return res.status(500).json({ error, message: "서버오류" });
   }
 });
 
@@ -77,7 +77,8 @@ router.put("/:commentId", async (req, res) => {
     } else {
       return res.status(401).json({ message: "비빌번호가 올바르지 않습니다." });
     }
-    res.json({ message: "댓글을 수정하였습니다." });
+
+    return res.status(200).json({ message: "댓글을 수정하였습니다." });
   } catch (error) {
     return res.status(500).json({ error, message: "서버오류" });
   }
@@ -102,7 +103,8 @@ router.delete("/:commentId", async (req, res) => {
     } else {
       return res.status(401).json({ message: "비빌번호가 올바르지 않습니다." });
     }
-    res.json({ message: "댓글을 삭제하였습니다." });
+
+    return res.status(200).json({ message: "댓글을 삭제하였습니다." });
   } catch (error) {
     return res.status(500).json({ error, message: "서버오류" });
   }
