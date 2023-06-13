@@ -89,4 +89,30 @@ router.put("/:postId", async (req, res) => {
   }
 });
 
+router.delete("/:postId", async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const { password } = req.body;
+
+    const post = await Posts.findOne({ postId });
+
+    if (!(password && postId)) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
+    if (!post) {
+      return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
+    }
+
+    if (post.password === password) {
+      await Posts.deleteOne({ postId });
+    } else {
+      return res.status(401).json({ message: "비빌번호가 올바르지 않습니다." });
+    }
+
+    res.json({ message: "게시글을 삭제 하였습니다." });
+  } catch (error) {
+    res.status(500).json({ message: "데이터 형식이 올바르지 않습니다." });
+  }
+});
+
 module.exports = router;
