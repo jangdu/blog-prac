@@ -7,8 +7,8 @@ connect();
 
 app.use(express.json());
 
-const postsRouter = require("./routes/posts");
-app.use("/posts", postsRouter);
+const routes = require("./routes/index");
+app.use(routes);
 
 app.get("/", (req, res) => {
   res.send("hello, world!");
