@@ -11,7 +11,7 @@ const routes = require("./routes/index");
 app.use(routes);
 
 app.get("/", (req, res) => {
-  res.send("hello, world!");
+  res.json("blog-api");
 });
 
 app.listen(port, () => {
