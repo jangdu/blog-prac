@@ -4,18 +4,17 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const posts = await Posts.find();
-  const postIds = carts.map((data) => data.postId);
 
-  const post = await Goods.find({ postId: postIds });
-
-  const results = carts.map((cart) => {
+  const postsData = posts.map((data) => {
     return {
-      quantity: cart.quantity,
-      goods: goods.find((item) => item.goodsId === cart.goodsId),
+      postId: data.postId,
+      user: data.user,
+      title: data.title,
+      createdAt: data.createdAt,
     };
   });
 
-  res.json({ carts: results });
+  res.json({ postsData: postsData });
 });
 
 module.exports = router;
