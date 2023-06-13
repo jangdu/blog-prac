@@ -24,9 +24,6 @@ const postsSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
-    price: {
-      type: Number,
-    },
   },
   {
     timestamps: true,
