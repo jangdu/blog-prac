@@ -32,7 +32,6 @@ router.post("/", async (req, res) => {
       title,
       content,
     });
-    console.log(createdPost);
 
     res.json({ message: "게시글을 생성하였습니다." });
   } catch (error) {

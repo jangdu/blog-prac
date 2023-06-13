@@ -50,7 +50,6 @@ router.post("/:postId", async (req, res) => {
 
     res.json({ message: "댓글을 생성하였습니다." });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error, message: "서버오류" });
   }
 });
@@ -77,7 +76,7 @@ router.put("/:commentId", async (req, res) => {
     } else {
       return res.status(404).json({ message: "비밀번호가 올바르지 않음" });
     }
-    return res.json({ message: "댓글을 수정하였습니다." });
+    res.json({ message: "댓글을 수정하였습니다." });
   } catch (error) {
     return res.status(500).json({ error, message: "서버오류" });
   }
