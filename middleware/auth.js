@@ -7,7 +7,6 @@ const AUTH_ERROR = { message: "로그인이 필요한 기능입니다." };
 
 const isAuth = async (req, res, next) => {
   const authHeader = req.get("Authorization");
-  console.log(authHeader);
   if (!(authHeader && authHeader.startsWith("Bearer "))) {
     return res.status(401).json(AUTH_ERROR);
   }
