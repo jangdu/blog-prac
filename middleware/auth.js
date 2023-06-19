@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const { Op } = require("sequelize");
-const { User } = require("../models");
+const { Users } = require("../models");
 
 const AUTH_ERROR = { message: "로그인이 필요한 기능입니다." };
 
@@ -20,7 +20,7 @@ const isAuth = async (req, res, next) => {
     if (!decoded.id) {
       return res.status(403).json({ errorMessage: "전달 된 쿠키에서 오류가 발생하였습니다." });
     }
-    const existsUsers = await User.findAll({
+    const existsUsers = await Users.findAll({
       where: {
         [Op.or]: [{ nickname: decoded.id }],
       },
@@ -28,7 +28,7 @@ const isAuth = async (req, res, next) => {
     if (!existsUsers.length) {
       return res.status(401).json(AUTH_ERROR);
     }
-    req.userId = existsUsers[0].dataValues.nickname;
+    req.userId = existsUsers[0].dataValues.userId;
     next();
   });
 };
