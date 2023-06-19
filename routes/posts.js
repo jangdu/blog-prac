@@ -2,6 +2,7 @@ const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
 const Posts = require("../schemas/posts");
+const isAuth = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   try {
@@ -22,7 +23,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", isAuth, async (req, res) => {
   try {
     const { user, password, title, content } = req.body;
 

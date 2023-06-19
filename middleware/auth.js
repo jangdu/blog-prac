@@ -1,8 +1,12 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
+
+const { Op } = require("sequelize");
+const { User } = require("../models");
 
 const AUTH_ERROR = { message: "로그인이 필요한 기능입니다." };
 
-export const isAuth = async (req, res, next) => {
+const isAuth = async (req, res, next) => {
+  const nickname = req.body.user;
   const authHeader = req.get("Authorization");
   console.log(authHeader);
   if (!(authHeader && authHeader.startsWith("Bearer "))) {
@@ -27,3 +31,4 @@ export const isAuth = async (req, res, next) => {
     next();
   });
 };
+module.exports = isAuth;
