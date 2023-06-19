@@ -6,7 +6,6 @@ const { User } = require("../models");
 const AUTH_ERROR = { message: "로그인이 필요한 기능입니다." };
 
 const isAuth = async (req, res, next) => {
-  const nickname = req.body.user;
   const authHeader = req.get("Authorization");
   console.log(authHeader);
   if (!(authHeader && authHeader.startsWith("Bearer "))) {
@@ -19,15 +18,18 @@ const isAuth = async (req, res, next) => {
     if (error) {
       return res.status(401).json(AUTH_ERROR);
     }
+    if (!decoded.id) {
+      return res.status(403).json({ errorMessage: "전달 된 쿠키에서 오류가 발생하였습니다." });
+    }
     const existsUsers = await User.findAll({
       where: {
-        [Op.or]: [{ nickname }],
+        [Op.or]: [{ nickname: decoded.id }],
       },
     });
     if (!existsUsers.length) {
       return res.status(401).json(AUTH_ERROR);
     }
-    req.userId = existsUsers;
+    req.userId = existsUsers[0].dataValues.nickname;
     next();
   });
 };

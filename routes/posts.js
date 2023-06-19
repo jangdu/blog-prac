@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
     const postsData = posts.map((data) => {
       return {
         postId: data.postId,
-        user: data.user,
+        nickname: data.nickname,
         title: data.title,
         createdAt: data.createdAt,
       };
@@ -25,15 +25,15 @@ router.get("/", async (req, res) => {
 
 router.post("/", isAuth, async (req, res) => {
   try {
-    const { user, password, title, content } = req.body;
+    const { title, content } = req.body;
+    const nickname = req.userId;
 
-    if (!(user && password && title && content)) {
+    if (!(title && content)) {
       return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
     }
     const createdPost = await Posts.create({
       postId: uuidv4(),
-      user,
-      password,
+      nickname,
       title,
       content,
     });
@@ -56,8 +56,7 @@ router.get("/:postId", async (req, res) => {
     return res.status(200).json({
       data: {
         postId,
-        user: post.user,
-        title: post.title,
+        nickname: post.nickname,
         content: post.content,
         createdAt: post.createdAt,
       },
@@ -67,52 +66,52 @@ router.get("/:postId", async (req, res) => {
   }
 });
 
-router.put("/:postId", async (req, res) => {
+router.put("/:postId", isAuth, async (req, res) => {
   try {
     const { postId } = req.params;
-    const { user, password, title, content } = req.body;
+    const { title, content } = req.body;
 
+    const nickname = req.userId;
     const post = await Posts.findOne({ postId });
 
-    if (!(user && password && title && content)) {
+    if (!(title && content)) {
       return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
     }
-    if (!post) {
+    if (post === null) {
       return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
     }
-
-    if (post.password === password) {
-      await Posts.updateOne({ postId }, { $set: { title, content } });
-    } else {
-      return res.status(401).json({ message: "비빌번호가 올바르지 않습니다." });
+    if (nickname !== post.nickname) {
+      return res.status(403).json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
     }
+
+    console.log(post);
+
+    await Posts.updateOne({ postId }, { $set: { title, content } });
+
     return res.status(200).json({ message: "게시글을 수정하였습니다." });
   } catch (error) {
     return res.status(500).json({ error, message: "서버오류" });
   }
 });
 
-router.delete("/:postId", async (req, res) => {
+router.delete("/:postId", isAuth, async (req, res) => {
   try {
     const { postId } = req.params;
-    const { password } = req.body;
+    const nickname = req.userId;
 
     const post = await Posts.findOne({ postId });
 
-    if (!(password && postId)) {
-      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    if (nickname !== post.nickname) {
+      return res.status(403).json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
     }
+
     if (!post) {
       return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
     }
 
-    if (post.password === password) {
-      await Posts.deleteOne({ postId });
-    } else {
-      return res.status(401).json({ message: "비빌번호가 올바르지 않습니다." });
-    }
+    await Posts.deleteOne({ postId });
 
-    return res.status(200).json({ message: "게시글을 삭제 하였습니다." });
+    return res.status(200).json({ message: "게시글을 삭제하였습니다." });
   } catch (error) {
     return res.status(500).json({ error, message: "서버오류" });
   }
