@@ -19,9 +19,14 @@ const validateString = (string) => {
   return pattern.test(string);
 };
 
-router.get("/", (req, res, next) => {
-  res.json({ message: "auth" });
-});
+const findByNickname = (nickname) => {
+  const existsUsers = User.findAll({
+    where: {
+      [Op.or]: [{ nickname }],
+    },
+  });
+  return existsUsers;
+};
 
 router.post("/signup", async (req, res, next) => {
   try {
@@ -40,11 +45,7 @@ router.post("/signup", async (req, res, next) => {
       return res.status(412).send({ errorMessage: "패스워드에 닉네임이 포함되어 있습니다." });
     }
 
-    const existsUsers = await User.findAll({
-      where: {
-        [Op.or]: [{ nickname }],
-      },
-    });
+    const existsUsers = await findByNickname(nickname);
 
     if (existsUsers.length) {
       return res.status(412).send({ errorMessage: "중복된 닉네임입니다." });
@@ -59,6 +60,20 @@ router.post("/signup", async (req, res, next) => {
   } catch (error) {
     return res.status(500).json({ error, message: "서버오류" });
   }
+});
+
+router.post("/login", async (req, res, next) => {
+  const { nickname, password } = req.body;
+  const user = await findByNickname(nickname);
+  if (!user) {
+    return res.status(401).json({ errorMessage: "닉네임 또는 패스워드를 확인해주세요." });
+  }
+  const isValidPassword = await bcrypt.compare(password, user[0].dataValues.password);
+  if (!isValidPassword) {
+    return res.status(401).json({ errorMessage: "닉네임 또는 패스워드를 확인해주세요." });
+  }
+  const token = createJwtToken(user.id);
+  res.status(200).json({ token, nickname });
 });
 
 module.exports = router;
