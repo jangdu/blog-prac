@@ -32,7 +32,7 @@ router.post("/signup", async (req, res, next) => {
   try {
     const { nickname, password, confirm } = req.body;
 
-    if (!validateString(nickname)) {
+    if (!validateString(nickname) || nickname.length < 4) {
       return res.status(412).send({ errorMessage: "닉네임의 형식이 일치하지 않습니다." });
     }
     if (password !== confirm) {
