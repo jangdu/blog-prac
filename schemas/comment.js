@@ -8,11 +8,7 @@ const commentsSchema = new mongoose.Schema(
       default: uuidv4,
       unique: true,
     },
-    user: {
-      type: String,
-      require: true,
-    },
-    password: {
+    nickname: {
       type: String,
       require: true,
     },
