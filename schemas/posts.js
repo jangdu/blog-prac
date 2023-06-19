@@ -8,13 +8,9 @@ const postsSchema = new mongoose.Schema(
       default: uuidv4,
       unique: true,
     },
-    user: {
+    nickname: {
       type: String,
-      require: true,
-    },
-    password: {
-      type: String,
-      require: true,
+      require,
     },
     title: {
       type: String,
