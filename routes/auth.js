@@ -14,6 +14,11 @@ const createJwtToken = (id) => {
   return jwt.sign({ id }, jwtSecretKey, { expiresIn: jwtExpiresInDays });
 };
 
+const validateString = (string) => {
+  const pattern = /^[a-zA-Z0-9]+$/;
+  return pattern.test(string);
+};
+
 router.get("/", (req, res, next) => {
   res.json({ message: "auth" });
 });
@@ -22,8 +27,17 @@ router.post("/signup", async (req, res, next) => {
   try {
     const { nickname, password, confirm } = req.body;
 
+    if (!validateString(nickname)) {
+      return res.status(412).send({ errorMessage: "닉네임의 형식이 일치하지 않습니다." });
+    }
     if (password !== confirm) {
-      return res.status(400).send({ errorMessage: "패스워드가 일치하지 않습니다." });
+      return res.status(412).send({ errorMessage: "패스워드가 일치하지 않습니다." });
+    }
+    if (password.length < 5) {
+      return res.status(412).send({ errorMessage: "패스워드가 형식이 일치하지 않습니다." });
+    }
+    if (password.includes(nickname)) {
+      return res.status(412).send({ errorMessage: "패스워드에 닉네임이 포함되어 있습니다." });
     }
 
     const existsUsers = await User.findAll({
@@ -33,7 +47,7 @@ router.post("/signup", async (req, res, next) => {
     });
 
     if (existsUsers.length) {
-      return res.status(409).send({ errorMessage: "중복된 닉네임입니다." });
+      return res.status(412).send({ errorMessage: "중복된 닉네임입니다." });
     }
 
     const hashed = await bcrypt.hash(password, bcryptSaltRounds);
