@@ -126,12 +126,11 @@ router.delete("/:postId", isAuth, async (req, res) => {
 
     const post = await Posts.findOne({ where: { postId } });
 
-    if (userId !== post.UserId) {
-      return res.status(403).json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
-    }
-
     if (!post) {
       return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
+    }
+    if (userId !== post.UserId) {
+      return res.status(403).json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
     }
 
     await Posts.destroy({
