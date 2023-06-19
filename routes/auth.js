@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const { Op } = require("sequelize");
-const { User } = require("../models");
+const { Users } = require("../models");
 
 const jwtSecretKey = "MPVjj3#we9DS4oV6mm8a$$6b9tqv4wMu";
 const jwtExpiresInDays = "2d"; // 기간
@@ -20,7 +20,7 @@ const validateString = (string) => {
 };
 
 const findByNickname = (nickname) => {
-  const existsUsers = User.findAll({
+  const existsUsers = Users.findAll({
     where: {
       [Op.or]: [{ nickname }],
     },
@@ -53,7 +53,7 @@ router.post("/signup", async (req, res, next) => {
 
     const hashed = await bcrypt.hash(password, bcryptSaltRounds);
 
-    await User.create({ nickname, password: hashed });
+    await Users.create({ nickname, password: hashed });
     const token = createJwtToken(nickname);
 
     res.status(201).send({ message: "회원 가입에 성공하였습니다.", token });
@@ -65,7 +65,8 @@ router.post("/signup", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   const { nickname, password } = req.body;
   const user = await findByNickname(nickname);
-  if (!user) {
+
+  if (!user || !user.length || user === null) {
     return res.status(401).json({ errorMessage: "닉네임 또는 패스워드를 확인해주세요." });
   }
   const isValidPassword = await bcrypt.compare(password, user[0].dataValues.password);
@@ -73,7 +74,7 @@ router.post("/login", async (req, res, next) => {
     return res.status(401).json({ errorMessage: "닉네임 또는 패스워드를 확인해주세요." });
   }
   const token = createJwtToken(user.id);
-  res.status(200).json({ token, nickname });
+  res.status(200).json({ token, nickname, message: "로그인에 성공했습니다." });
 });
 
 module.exports = router;
