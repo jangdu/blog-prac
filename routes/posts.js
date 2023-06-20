@@ -56,6 +56,9 @@ router.post("/", isAuth, async (req, res) => {
 router.get("/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
+    if (!postId) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
     const post = await Posts.findOne({
       include: [
         {
@@ -91,11 +94,19 @@ router.put("/:postId", isAuth, async (req, res) => {
     const { title, content } = req.body;
 
     const userId = req.userId;
-    const post = await Posts.findOne({ where: { postId } });
 
+    if (!userId) {
+      return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
+    }
+    if (!postId) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
     if (!(title && content)) {
       return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
     }
+
+    const post = await Posts.findOne({ where: { postId } });
+
     if (post === null) {
       return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
     }
@@ -123,6 +134,13 @@ router.delete("/:postId", isAuth, async (req, res) => {
   try {
     const { postId } = req.params;
     const userId = req.userId;
+
+    if (!userId) {
+      return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
+    }
+    if (!postId) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
 
     const post = await Posts.findOne({ where: { postId } });
 
