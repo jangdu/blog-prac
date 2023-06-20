@@ -2,9 +2,6 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
-const connect = require("./schemas");
-connect();
-
 app.use(express.json());
 
 const routes = require("./routes/index");
