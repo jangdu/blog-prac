@@ -1,19 +1,29 @@
 const express = require("express");
-const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
-const Posts = require("../schemas/posts");
 const isAuth = require("../middleware/auth");
+const { Posts, Users } = require("../models");
+const { Op } = require("sequelize");
 
 router.get("/", async (req, res) => {
   try {
-    const posts = await Posts.find();
+    const posts = await Posts.findAll({
+      include: [
+        {
+          model: Users,
+          attributes: ["nickname"],
+        },
+      ],
+      attributes: ["postId", "UserId", "title", "createdAt"],
+      order: [["createdAt", "DESC"]],
+    });
 
     const postsData = posts.map((data) => {
       return {
         postId: data.postId,
-        nickname: data.nickname,
+        nickname: data.User.dataValues.nickname,
         title: data.title,
         createdAt: data.createdAt,
+        updateAt: data.updateAt,
       };
     });
 
@@ -26,14 +36,13 @@ router.get("/", async (req, res) => {
 router.post("/", isAuth, async (req, res) => {
   try {
     const { title, content } = req.body;
-    const nickname = req.userId;
+    const UserId = req.userId;
 
     if (!(title && content)) {
       return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
     }
     const createdPost = await Posts.create({
-      postId: uuidv4(),
-      nickname,
+      UserId,
       title,
       content,
     });
@@ -47,16 +56,29 @@ router.post("/", isAuth, async (req, res) => {
 router.get("/:postId", async (req, res) => {
   try {
     const { postId } = req.params;
-    const post = await Posts.findOne({ postId });
+    if (!postId) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
+    const post = await Posts.findOne({
+      include: [
+        {
+          model: Users,
+          attributes: ["nickname"],
+        },
+      ],
+      attributes: ["postId", "UserId", "title", "content", "createdAt"],
+      where: { postId },
+    });
 
     if (!post) {
-      return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
+      return res.status(400).json({ message: "해당 게시글을 찾을 수 없습니다." });
     }
 
     return res.status(200).json({
       data: {
         postId,
-        nickname: post.nickname,
+        nickname: post.User.dataValues.nickname,
+        title: post.title,
         content: post.content,
         createdAt: post.createdAt,
       },
@@ -71,22 +93,36 @@ router.put("/:postId", isAuth, async (req, res) => {
     const { postId } = req.params;
     const { title, content } = req.body;
 
-    const nickname = req.userId;
-    const post = await Posts.findOne({ postId });
+    const userId = req.userId;
 
+    if (!userId) {
+      return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
+    }
+    if (!postId) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
     if (!(title && content)) {
       return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
     }
+
+    const post = await Posts.findOne({ where: { postId } });
+
     if (post === null) {
       return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
     }
-    if (nickname !== post.nickname) {
+    if (userId !== post.UserId) {
       return res.status(403).json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
     }
 
-    console.log(post);
-
-    await Posts.updateOne({ postId }, { $set: { title, content } });
+    // await Posts.updateOne({ postId }, { $set: { title, content } });
+    await Posts.update(
+      { title, content },
+      {
+        where: {
+          [Op.and]: [{ postId }, { UserId: userId }],
+        },
+      }
+    );
 
     return res.status(200).json({ message: "게시글을 수정하였습니다." });
   } catch (error) {
@@ -97,19 +133,29 @@ router.put("/:postId", isAuth, async (req, res) => {
 router.delete("/:postId", isAuth, async (req, res) => {
   try {
     const { postId } = req.params;
-    const nickname = req.userId;
+    const userId = req.userId;
 
-    const post = await Posts.findOne({ postId });
-
-    if (nickname !== post.nickname) {
-      return res.status(403).json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
+    if (!userId) {
+      return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
     }
+    if (!postId) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
+
+    const post = await Posts.findOne({ where: { postId } });
 
     if (!post) {
       return res.status(404).json({ message: "게시글 조회에 실패하였습니다." });
     }
+    if (userId !== post.UserId) {
+      return res.status(403).json({ errorMessage: "게시글 수정의 권한이 존재하지 않습니다." });
+    }
 
-    await Posts.deleteOne({ postId });
+    await Posts.destroy({
+      where: {
+        [Op.and]: [{ postId }, { UserId: userId }],
+      },
+    });
 
     return res.status(200).json({ message: "게시글을 삭제하였습니다." });
   } catch (error) {

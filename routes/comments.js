@@ -1,24 +1,34 @@
 const express = require("express");
 const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
+const { Posts, Users, Comments } = require("../models");
 
-const Comments = require("../schemas/comment");
 const isAuth = require("../middleware/auth");
+const { Op } = require("sequelize");
 
-router.get("/:postId", async (req, res) => {
+router.get("/:PostId", async (req, res) => {
   try {
-    const { postId } = req.params;
-    const comments = await Comments.find({ postId });
+    const { PostId } = req.params;
 
-    if (!postId) {
-      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니." });
+    if (!PostId) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
+    const post = await Posts.findOne({ where: { PostId } });
+    if (!post) {
+      return res.status(400).json({ message: "해당 게시글을 찾을 수 없습니다." });
     }
 
+    const comments = await Comments.findAll({
+      include: [{ model: Users, attributes: ["nickname"] }],
+      attributes: ["PostId", "id", "UserId", "comment", "createdAt"],
+      where: { PostId },
+    });
     const commentsData = comments.map((data) => {
       return {
-        commentId: data.commentId,
-        nickname: data.nickname,
-        content: data.content,
+        commentId: data.id,
+        postId: data.PostId,
+        nickname: data.User.dataValues.nickname,
+        comment: data.comment,
         createdAt: data.createdAt,
       };
     });
@@ -29,25 +39,31 @@ router.get("/:postId", async (req, res) => {
   }
 });
 
-router.post("/:postId", isAuth, async (req, res) => {
+router.post("/:PostId", isAuth, async (req, res) => {
   try {
-    const { content } = req.body;
-    const { postId } = req.params;
-    const nickname = req.userId;
-
-    if (!content) {
+    const { comment } = req.body;
+    const { PostId } = req.params;
+    const UserId = req.userId;
+    if (!UserId) {
+      return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
+    }
+    if (!comment) {
       return res.status(400).json({ errorMessage: "댓글 내용을 입력해주세요" });
     }
+    if (!PostId) {
+      return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
+    }
 
-    if (!postId) {
-      return res.status(400).json({ errorMessage: "로그인이 필요한 기능입니다. " });
+    const post = await Posts.findOne({ where: { PostId } });
+
+    if (!post) {
+      return res.status(400).json({ message: "해당 게시글을 찾을 수 없습니다." });
     }
 
     const createdPost = await Comments.create({
-      postId,
-      nickname,
-      commentId: uuidv4(),
-      content,
+      PostId,
+      UserId,
+      comment,
     });
 
     return res.status(201).json({ errorMessage: "댓글을 생성하였습니다." });
@@ -58,30 +74,37 @@ router.post("/:postId", isAuth, async (req, res) => {
 
 router.put("/:commentId", isAuth, async (req, res) => {
   try {
-    const { commentId } = req.params;
-    const { content } = req.body;
-    const nickname = req.userId;
+    const id = req.params.commentId;
+    const { comment } = req.body;
+    const UserId = req.userId;
 
-    const comment = await Comments.findOne({ commentId });
-
-    if (!nickname) {
+    if (!UserId) {
       return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
     }
-    if (!commentId) {
+    if (!id) {
       return res.status(400).json({ errorMessage: "댓글_id를 입력해주세요." });
     }
-    if (!content) {
+    if (!comment) {
       return res.status(400).json({ errorMessage: "댓글 내용을 입력해주세요." });
     }
-    if (!comment) {
+
+    const hasComments = await Comments.findOne({ where: { id } });
+    if (!hasComments) {
       return res.status(404).json({ errorMessage: "댓글 조회에 실패하였습니다." });
     }
 
-    if (comment.nickname === nickname) {
-      await Comments.updateOne({ commentId }, { $set: { content } });
-    } else {
+    if (UserId !== hasComments.UserId) {
       return res.status(401).json({ errorMessage: "수정 권한이 없습니다." });
     }
+
+    await Comments.update(
+      { comment },
+      {
+        where: {
+          [Op.and]: [{ UserId }, { id }],
+        },
+      }
+    );
 
     return res.status(200).json({ errorMessage: "댓글을 수정하였습니다." });
   } catch (error) {
@@ -91,26 +114,31 @@ router.put("/:commentId", isAuth, async (req, res) => {
 
 router.delete("/:commentId", isAuth, async (req, res) => {
   try {
-    const { commentId } = req.params;
-    const nickname = req.userId;
+    const id = req.params.commentId;
+    const UserId = req.userId;
 
-    const comment = await Comments.findOne({ commentId });
-
-    if (!nickname) {
+    if (!UserId) {
       return res.status(403).json({ errorMessage: "로그인이 필요한 기능입니다." });
     }
-    if (!commentId) {
+    if (!id) {
       return res.status(400).json({ errorMessage: "데이터 형식이 올바르지 않습니다." });
     }
+
+    const comment = await Comments.findOne({ where: { id } });
+
     if (!comment) {
       return res.status(404).json({ errorMessage: "댓글 조회에 실패하였습니다." });
     }
 
-    if (comment.nickname === nickname) {
-      await Comments.deleteOne({ commentId });
-    } else {
+    if (comment.UserId !== UserId) {
       return res.status(401).json({ errorMessage: "삭제 권한이 없습니다." });
     }
+
+    await Comments.destroy({
+      where: {
+        [Op.and]: [{ id }, { UserId }],
+      },
+    });
 
     return res.status(200).json({ errorMessage: "댓글을 삭제하였습니다." });
   } catch (error) {
