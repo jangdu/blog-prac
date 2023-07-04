@@ -1,11 +1,11 @@
+import { Outlet } from "react-router-dom";
+import Navbar from "./components/Navbar";
+
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p className="">
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header>
+    <div>
+      <Navbar />
+      <Outlet />
     </div>
   );
 }
