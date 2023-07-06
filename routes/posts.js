@@ -3,8 +3,10 @@ const router = express.Router();
 const isAuth = require("../middleware/auth");
 const { Posts, Users } = require("../models");
 const { Op } = require("sequelize");
-const postsController = require("../controller/posts");
+const PostsController = require("../controller/posts");
 //import * as tweetController from '../controller/tweet.js';
+
+const postsController = new PostsController();
 
 router.get("/", postsController.getAll);
 
