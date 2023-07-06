@@ -12,6 +12,7 @@ class LikeRepository {
 
   getPostsByUserId = async (userId) => {
     const likedPosts = await Like.findAll({
+      attributes: [],
       where: { userId },
       include: [
         {
