@@ -12,11 +12,10 @@ const isAuth = async (req, res, next) => {
   }
 
   const token = authHeader.split(" ")[1];
-  console.log(authHeader);
+
   // todo: Make it secure
   jwt.verify(token, "MPVjj3#we9DS4oV6mm8a$$6b9tqv4wMu", async (error, decoded) => {
     if (error) {
-      console.log(token);
       return res.status(401).json(AUTH_ERROR);
     }
     if (!decoded.id) {
@@ -24,13 +23,13 @@ const isAuth = async (req, res, next) => {
     }
     const existsUsers = await Users.findAll({
       where: {
-        [Op.or]: [{ nickname: decoded.id }],
+        [Op.or]: [{ userId: decoded.id }],
       },
     });
     if (!existsUsers.length) {
       return res.status(401).json(AUTH_ERROR);
     }
-    req.userId = existsUsers[0].dataValues.userId;
+    req.userId = decoded.id;
     next();
   });
 };

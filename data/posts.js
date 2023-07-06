@@ -1,4 +1,4 @@
-const { Posts, Users } = require("../models");
+const { Posts, Users, Like, sequelize } = require("../models");
 const { Op } = require("sequelize");
 
 async function getAll() {
@@ -8,15 +8,22 @@ async function getAll() {
         model: Users,
         attributes: ["nickname"],
       },
+      {
+        model: Like,
+        attributes: [[sequelize.fn("COUNT", sequelize.col("id")), "likeCount"]],
+      },
     ],
     attributes: ["postId", "UserId", "title", "createdAt", "updatedAt"],
+    group: ["Posts.postId"], // 그룹화하여 중복 제거
     order: [["createdAt", "DESC"]],
   });
-  return posts.map(({ postId, title, createdAt, User }) => {
-    const { nickname } = User.dataValues;
-    return { postId, nickname, title, createdAt };
-  });
+  console.log(posts);
+  return posts;
 }
+
+const getByPostId = async (postId) => {
+  return await Posts.findByPk(postId);
+};
 
 async function getOne(id) {
   const post = await Posts.findOne({
@@ -24,6 +31,10 @@ async function getOne(id) {
       {
         model: Users,
         attributes: ["nickname"],
+      },
+      {
+        model: Like,
+        attributes: [[sequelize.fn("COUNT", sequelize.col("id")), "likeCount"]],
       },
     ],
     attributes: ["postId", "UserId", "title", "content", "createdAt"],
@@ -35,7 +46,7 @@ async function getOne(id) {
   const { postId, UserId, title, content, createdAt, User } = post;
   const { nickname } = User.dataValues;
 
-  return { postId, UserId, nickname, title, content, createdAt };
+  return post;
 }
 
 async function create(UserId, title, content) {
@@ -65,4 +76,4 @@ async function remove(postId, UserId) {
   });
 }
 
-module.exports = { getAll, getOne, create, update, remove };
+module.exports = { getAll, getOne, getByPostId, create, update, remove };

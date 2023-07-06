@@ -46,7 +46,7 @@ const login = async (req, res, next) => {
   if (!isValidPassword) {
     return res.status(401).json({ errorMessage: "닉네임 또는 패스워드를 확인해주세요." });
   }
-  const token = authRepository.createJwtToken(user.id);
+  const token = authRepository.createJwtToken(user[0].userId);
   res.status(200).json({ token, nickname, message: "로그인에 성공했습니다." });
 };
 

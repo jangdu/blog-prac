@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         targetKey: "postId",
         foreignKey: "PostId",
       });
+      this.hasMany(models.Like, {
+        sourceKey: "postId",
+        foreignKey: "postId",
+      });
     }
   }
   Posts.init(
