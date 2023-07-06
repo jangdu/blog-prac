@@ -3,10 +3,11 @@ const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
 const { Posts, Users, Comments } = require("../models");
 
-const isAuth = require("../middleware/auth");
+const AuthMiddleware = require("../middleware/auth");
 const { Op } = require("sequelize");
 
 const commentsController = require("../controller/comments");
+const { isAuth } = new AuthMiddleware();
 
 router.get("/:PostId", commentsController.getAll);
 

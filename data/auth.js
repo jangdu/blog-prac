@@ -3,34 +3,35 @@ const { Users } = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const jwtSecretKey = "MPVjj3#we9DS4oV6mm8a$$6b9tqv4wMu";
-const jwtExpiresInDays = "2d"; // 기간
-const bcryptSaltRounds = 12; // 길이
+class AuthRepository {
+  jwtSecretKey = "MPVjj3#we9DS4oV6mm8a$$6b9tqv4wMu";
+  jwtExpiresInDays = "2d"; // 기간
+  bcryptSaltRounds = 12; // 길이
 
-const getByNickname = (nickname) => {
-  const existsUsers = Users.findAll({
-    where: {
-      [Op.or]: [{ nickname }],
-    },
-  });
-  return existsUsers;
-};
+  getByNickname = (nickname) => {
+    const existsUsers = Users.findAll({
+      where: {
+        [Op.or]: [{ nickname }],
+      },
+    });
+    return existsUsers;
+  };
 
-const createJwtToken = (id) => {
-  return jwt.sign({ id }, jwtSecretKey, { expiresIn: jwtExpiresInDays });
-};
+  createJwtToken = (id) => {
+    return jwt.sign({ id }, this.jwtSecretKey, { expiresIn: this.jwtExpiresInDays });
+  };
 
-const createUser = async (nickname, password) => {
-  console.log(nickname);
-  const hashed = await bcrypt.hash(password, bcryptSaltRounds);
+  createUser = async (nickname, password) => {
+    const hashed = await bcrypt.hash(password, this.bcryptSaltRounds);
 
-  await Users.create({ nickname, password: hashed });
+    await Users.create({ nickname, password: hashed });
 
-  return await createJwtToken(nickname);
-};
+    return await this.createJwtToken(nickname);
+  };
 
-const isValidPassword = async (password, hashedPassword) => {
-  return bcrypt.compare(password, hashedPassword);
-};
+  isValidPassword = async (password, hashedPassword) => {
+    return bcrypt.compare(password, hashedPassword);
+  };
+}
 
-module.exports = { getByNickname, createJwtToken, createUser, isValidPassword };
+module.exports = AuthRepository;

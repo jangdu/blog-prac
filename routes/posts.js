@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const isAuth = require("../middleware/auth");
 const { Posts, Users } = require("../models");
 const { Op } = require("sequelize");
 const PostsController = require("../controller/posts");
+const AuthMiddleware = require("../middleware/auth");
 //import * as tweetController from '../controller/tweet.js';
 
 const postsController = new PostsController();
+const { isAuth } = new AuthMiddleware();
 
 router.get("/", postsController.getAll);
 

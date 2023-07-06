@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const isAuth = require("../middleware/auth");
+const AuthMiddleware = require("../middleware/auth");
 const likeController = require("../controller/like");
+
+const { isAuth } = new AuthMiddleware();
 
 router.get("/likes", isAuth, likeController.getByUserId);
 
