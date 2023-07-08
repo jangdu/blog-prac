@@ -1,4 +1,4 @@
-const { User, Posts, Like } = require("../models");
+const { Users, Posts, Like, sequelize } = require("../models");
 
 class LikeRepository {
   getByPostIdandUserId = async (postId, userId) => {
@@ -12,13 +12,22 @@ class LikeRepository {
 
   getPostsByUserId = async (userId) => {
     const likedPosts = await Like.findAll({
-      attributes: [],
       where: { userId },
       include: [
         {
           model: Posts,
+          include: [
+            {
+              model: Users,
+              attributes: ["nickname"],
+            },
+          ],
+          attributes: ["postId", "title", "createdAt", [sequelize.literal("(SELECT COUNT(*) FROM likes WHERE Post.postId = postId)"), "likeCount"]],
+          group: ["Posts"], // 그룹화하여 중복 제거
+          order: [[sequelize.literal("likeCount"), "DESC"]],
         },
       ],
+      attributes: [],
     });
 
     return likedPosts;

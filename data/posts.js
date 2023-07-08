@@ -9,16 +9,12 @@ class PostsRepository {
           model: Users,
           attributes: ["nickname"],
         },
-        {
-          model: Like,
-          attributes: [[sequelize.fn("COUNT", sequelize.col("id")), "likeCount"]],
-        },
       ],
-      attributes: ["postId", "UserId", "title", "createdAt", "updatedAt"],
+      attributes: ["postId", "title", "createdAt", [sequelize.literal("(SELECT COUNT(*) FROM likes WHERE likes.postId = Posts.postId)"), "likeCount"]],
       group: ["Posts.postId"], // 그룹화하여 중복 제거
-      order: [["createdAt", "DESC"]],
+      order: [[sequelize.literal("likeCount"), "DESC"]],
+      raw: true,
     });
-    console.log(posts);
     return posts;
   };
 

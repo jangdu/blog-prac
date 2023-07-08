@@ -20,8 +20,14 @@ class LikeService {
   };
 
   getPostsByUserId = async (userId) => {
-    const likes = await this.likeRepository.getPostsByUserId(userId);
-    return likes;
+    const likedPosts = await this.likeRepository.getPostsByUserId(userId);
+    const posts = await likedPosts.map((likedPost) => {
+      const { postId, title, createdAt, likeCount } = likedPost.Post.dataValues;
+      const { nickname } = likedPost.Post.dataValues.User;
+      return { postId, title, createdAt, likeCount, nickname };
+    });
+    return posts;
+    return likedPosts;
   };
 }
 
