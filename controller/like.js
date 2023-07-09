@@ -32,7 +32,6 @@ class LikeController {
 
     try {
       const likes = await this.likeService.getPostsByUserId(userId);
-      console.log(likes);
       return res.status(200).json(likes);
     } catch (error) {
       console.error("좋아요 조회 처리 중 오류가 발생했습니다.", error);

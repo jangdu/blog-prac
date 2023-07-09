@@ -27,7 +27,6 @@ class LikeService {
       return { postId, title, createdAt, likeCount, nickname };
     });
     return posts;
-    return likedPosts;
   };
 }
 

@@ -27,7 +27,6 @@ class CommentsRepository {
     if (!comment) {
       return { errorMessage: "해당하는 댓글을 찾을 수 없습니다." };
     }
-    console.log(comment);
     return comment;
   };
 

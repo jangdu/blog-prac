@@ -64,7 +64,6 @@ class PostsController {
       }
 
       const post = await this.postsService.getById(postId);
-      console.log(post);
 
       if (!post) return res.status(400).json({ errorMessage: "해당하는 게시글을 찾을 수 없습니다." });
 
