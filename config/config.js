@@ -22,34 +22,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const sequelize_1 = __importStar(require("sequelize"));
-const users_1 = __importDefault(require("./users"));
-const posts_1 = __importDefault(require("./posts"));
-class Comments extends sequelize_1.Model {
-    static initiate(sequelize) {
-        Comments.init({
-            UserId: sequelize_1.default.INTEGER,
-            PostId: sequelize_1.default.INTEGER,
-            comment: sequelize_1.default.STRING,
-        }, {
-            sequelize,
-            modelName: "Comments",
-        });
-    }
-    static associate() {
-        // define association here
-        this.belongsTo(users_1.default, {
-            targetKey: "userId",
-            foreignKey: "UserId",
-        });
-        this.belongsTo(posts_1.default, {
-            targetKey: "postId",
-            foreignKey: "PostId",
-        });
-    }
-}
-exports.default = Comments;
+exports.config = void 0;
+const dotenv = __importStar(require("dotenv"));
+dotenv.config();
+exports.config = {
+    development: {
+        username: "admin",
+        password: "!272422jdj",
+        database: "blog_db",
+        host: "database-1.chuvs2bdhmq1.ap-northeast-2.rds.amazonaws.com",
+        dialect: "mysql",
+    },
+};

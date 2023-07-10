@@ -1,7 +1,7 @@
-const { Op } = require("sequelize");
-const { Users } = require("../models");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+import { Op } from "sequelize";
+const { Users } = db.import("../models/index.js");
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
 class AuthRepository {
   jwtSecretKey = "MPVjj3#we9DS4oV6mm8a$$6b9tqv4wMu";
@@ -34,4 +34,4 @@ class AuthRepository {
   };
 }
 
-module.exports = AuthRepository;
+export default AuthRepository;

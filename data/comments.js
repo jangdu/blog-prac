@@ -1,5 +1,5 @@
-const { Users, Comments } = require("../models");
-const { Op } = require("sequelize");
+const { Users, Comments } = db.import("../models");
+import { Op } from "sequelize";
 
 class CommentsRepository {
   getAll = async (PostId) => {
@@ -58,4 +58,4 @@ class CommentsRepository {
   };
 }
 
-module.exports = CommentsRepository;
+export default CommentsRepository;

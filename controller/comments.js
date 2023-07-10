@@ -1,5 +1,5 @@
-const PostsService = require("../services/posts");
-const CommentsService = require("../services/comments");
+import PostsService from "../services/posts.js";
+import CommentsService from "../services/comments.js";
 
 class CommentsController {
   postsService = new PostsService();
@@ -85,4 +85,4 @@ class CommentsController {
   };
 }
 
-module.exports = CommentsController;
+export default CommentsController;

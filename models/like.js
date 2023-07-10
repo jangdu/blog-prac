@@ -1,38 +1,60 @@
 "use strict";
-const { Model } = require("sequelize");
-
-module.exports = (sequelize, DataTypes) => {
-  class Like extends Model {
-    static associate(models) {
-      Like.belongsTo(models.Users, {
-        targetKey: "userId",
-        foreignKey: "userId",
-      });
-
-      Like.belongsTo(models.Posts, {
-        targetKey: "postId",
-        foreignKey: "postId",
-      });
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
     }
-  }
-
-  Like.init(
-    {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER,
-      },
-      userId: DataTypes.INTEGER,
-      postId: DataTypes.INTEGER,
-    },
-    {
-      sequelize,
-      modelName: "Like",
-      tableName: "likes", // 테이블명 설정 (기본값: 모델명의 복수형)
-    }
-  );
-
-  return Like;
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const sequelize_1 = __importStar(require("sequelize"));
+const users_1 = __importDefault(require("./users"));
+const posts_1 = __importDefault(require("./posts"));
+class Like extends sequelize_1.Model {
+    static initiate(sequelize) {
+        Like.init({
+            id: {
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+                type: sequelize_1.default.INTEGER,
+            },
+            userId: sequelize_1.default.INTEGER,
+            postId: sequelize_1.default.INTEGER,
+        }, {
+            sequelize,
+            modelName: "Like",
+            tableName: "likes", // 테이블명 설정 (기본값: 모델명의 복수형)
+        });
+    }
+    static associate() {
+        Like.belongsTo(users_1.default, {
+            targetKey: "userId",
+            foreignKey: "userId",
+        });
+        Like.belongsTo(posts_1.default, {
+            targetKey: "postId",
+            foreignKey: "postId",
+        });
+    }
+}
+exports.default = Like;

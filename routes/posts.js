@@ -1,10 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const { Posts, Users } = require("../models");
-const { Op } = require("sequelize");
-const PostsController = require("../controller/posts");
-const AuthMiddleware = require("../middleware/auth");
-//import * as tweetController from '../controller/tweet.js';
+import PostsController from "../controller/posts.js";
+import AuthMiddleware from "../middleware/auth.js";
 
 const postsController = new PostsController();
 const { isAuth } = new AuthMiddleware();
@@ -19,4 +16,4 @@ router.put("/:postId", isAuth, postsController.update);
 
 router.delete("/:postId", isAuth, postsController.remove);
 
-module.exports = router;
+export default router;

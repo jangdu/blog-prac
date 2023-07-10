@@ -1,4 +1,4 @@
-const AuthRepository = require("../data/auth");
+import AuthRepository from "../data/auth.js";
 
 class AuthService {
   authRepository = new AuthRepository();
@@ -24,4 +24,4 @@ class AuthService {
     return token;
   };
 }
-module.exports = AuthService;
+export default AuthService;

@@ -1,5 +1,5 @@
-const PostsRepository = require("../data/posts");
-const PostsService = require("../services/posts");
+import PostsRepository from "../data/posts.js";
+import PostsService from "../services/posts.js";
 
 class PostsController {
   postsRepository = new PostsRepository();
@@ -100,4 +100,4 @@ class PostsController {
   };
 }
 
-module.exports = PostsController;
+export default PostsController;

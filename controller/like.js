@@ -1,5 +1,5 @@
-const LikeService = require("../services/like");
-const PostsService = require("../services/posts");
+import LikeService from "../services/like.js";
+import PostsService from "../services/posts.js";
 
 class LikeController {
   postService = new PostsService();
@@ -40,4 +40,4 @@ class LikeController {
   };
 }
 
-module.exports = LikeController;
+export default LikeController;

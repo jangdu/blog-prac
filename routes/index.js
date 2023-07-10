@@ -1,13 +1,14 @@
-const express = require("express");
+import express from "express";
+
 const router = express.Router();
 
-const postsRouter = require("./posts");
-const commentsRouter = require("./comments");
-const authRouter = require("./auth");
-const likeRouter = require("./like");
+import postsRouter from "./posts.js";
+import commentsRouter from "./comments.js";
+import authRouter from "./auth.js";
+import likeRouter from "./like.js";
 
 router.use("/posts", likeRouter, postsRouter);
 router.use("/comments", commentsRouter);
 router.use("/auth", authRouter);
 
-module.exports = router;
+export default router;

@@ -1,12 +1,13 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
+
 const app = express();
 const port = 3000;
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
-const routes = require("./routes/index");
+import routes from "./routes/index.js";
 app.use(routes);
 
 app.get("/", (req, res) => {
