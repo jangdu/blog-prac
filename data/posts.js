@@ -1,5 +1,5 @@
-const { Posts, Users, Like, sequelize } = require("../models");
-const { Op } = require("sequelize");
+import { Posts } from "../models/posts";
+import { Op } from "sequelize";
 
 class PostsRepository {
   getAll = async () => {
