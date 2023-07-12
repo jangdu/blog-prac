@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 
-import { Op } from "sequelize";
-const { Users } = db.import("../models/index.js");
+const { Op } = require("sequelize");
+const { Users } = require("../models");
 
 class AuthMiddleware {
   AUTH_ERROR = { message: "로그인이 필요한 기능입니다." };
@@ -35,4 +35,4 @@ class AuthMiddleware {
     });
   };
 }
-export default AuthMiddleware;
+module.exports = AuthMiddleware;

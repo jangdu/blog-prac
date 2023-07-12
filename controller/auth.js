@@ -1,4 +1,4 @@
-import AuthService from "../services/auth.js";
+const AuthService = require("../services/auth");
 
 class AuthController {
   authService = new AuthService();
@@ -53,4 +53,4 @@ class AuthController {
   };
 }
 
-export default AuthController;
+module.exports = AuthController;

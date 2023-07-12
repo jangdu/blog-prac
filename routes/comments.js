@@ -1,8 +1,11 @@
-import express from "express";
+const express = require("express");
+const { v4: uuidv4 } = require("uuid");
 const router = express.Router();
+const { Posts, Users, Comments } = require("../models");
 
-import AuthMiddleware from "../middleware/auth.js";
-import CommentsController from "../controller/comments.js";
+const AuthMiddleware = require("../middleware/auth");
+const CommentsController = require("../controller/comments");
+const { Op } = require("sequelize");
 
 const commentsController = new CommentsController();
 const { isAuth } = new AuthMiddleware();
@@ -15,4 +18,4 @@ router.put("/:commentId", isAuth, commentsController.update);
 
 router.delete("/:commentId", isAuth, commentsController.remove);
 
-export default router;
+module.exports = router;

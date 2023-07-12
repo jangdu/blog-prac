@@ -1,7 +1,7 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
-import AuthMiddleware from "../middleware/auth.js";
-import LikeController from "../controller/like.js";
+const AuthMiddleware = require("../middleware/auth");
+const LikeController = require("../controller/like");
 
 const likeController = new LikeController();
 
@@ -11,4 +11,4 @@ router.get("/likes", isAuth, likeController.getByUserId);
 
 router.put("/:postId/likes", isAuth, likeController.toggleLike);
 
-export default router;
+module.exports = router;

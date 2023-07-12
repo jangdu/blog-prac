@@ -1,5 +1,6 @@
-import { Posts } from "../models/posts";
-import { Op } from "sequelize";
+const { Posts, Users, Like, sequelize } = require("../models");
+// const { Posts } = require("../models/posts");
+const { Op } = require("sequelize");
 
 class PostsRepository {
   getAll = async () => {
@@ -70,4 +71,4 @@ class PostsRepository {
   };
 }
 
-export default PostsRepository;
+module.exports = PostsRepository;

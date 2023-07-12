@@ -1,13 +1,12 @@
-import express from "express";
-import cors from "cors";
-
+const express = require("express");
+const cors = require("cors");
 const app = express();
 const port = 3000;
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
-import routes from "./routes/index.js";
+const routes = require("./routes/index");
 app.use(routes);
 
 app.get("/", (req, res) => {

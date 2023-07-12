@@ -1,4 +1,4 @@
-import LikeRepository from "../data/like.js";
+const LikeRepository = require("../data/like");
 
 class LikeService {
   likeRepository = new LikeRepository();
@@ -30,4 +30,4 @@ class LikeService {
   };
 }
 
-export default LikeService;
+module.exports = LikeService;

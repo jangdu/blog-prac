@@ -3,6 +3,9 @@ import Users from "./users";
 import Posts from "./posts";
 
 class Comments extends Model<InferAttributes<Comments>, InferCreationAttributes<Comments>> {
+  declare UserId: CreateOptions<number>;
+  declare PostId: CreateOptions<number>;
+  declare comment: string;
   static initiate(sequelize: Sequelize.Sequelize) {
     Comments.init(
       {

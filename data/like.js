@@ -1,4 +1,4 @@
-const { Users, Posts, Like, sequelize } = db.import("../models/index.js");
+const { Users, Posts, Like, sequelize } = require("../models");
 
 class LikeRepository {
   getByPostIdandUserId = async (postId, userId) => {
@@ -50,4 +50,4 @@ class LikeRepository {
   };
 }
 
-export default LikeRepository;
+module.exports = LikeRepository;

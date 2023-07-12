@@ -3,6 +3,10 @@ import Users from "./users";
 import Posts from "./posts";
 
 class Like extends Model<InferAttributes<Like>, InferCreationAttributes<Like>> {
+  declare id: CreateOptions<number>;
+  declare userId: CreateOptions<number>;
+  declare postId: CreateOptions<number>;
+
   static initiate(sequelize: Sequelize.Sequelize) {
     Like.init(
       {

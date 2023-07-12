@@ -1,4 +1,4 @@
-import CommentsRepository from "../data/comments.js";
+const CommentsRepository = require("../data/comments");
 
 class CommetsService {
   commentsRepository = new CommentsRepository();
@@ -28,4 +28,4 @@ class CommetsService {
     return removeComment;
   };
 }
-export default CommetsService;
+module.exports = CommetsService;
