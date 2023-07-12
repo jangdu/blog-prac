@@ -52,6 +52,7 @@ class PostsController {
 
   update = async (req, res) => {
     try {
+      console.log("aaaaa");
       const { postId } = req.params;
       const { title, content } = req.body;
 

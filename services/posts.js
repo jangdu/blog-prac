@@ -19,6 +19,7 @@ class PostsService {
   };
 
   update = async (postId, userId, title, content) => {
+    console.log("");
     const updatedPost = await this.postsRepository.update(postId, userId, title, content);
 
     return updatedPost;

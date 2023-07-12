@@ -1,22 +1,27 @@
 const { Posts, Users, Like, sequelize } = require("../models");
 // const { Posts } = require("../models/posts");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 
 class PostsRepository {
   getAll = async () => {
-    const posts = await Posts.findAll({
-      include: [
-        {
-          model: Users,
-          attributes: ["nickname"],
-        },
-      ],
-      attributes: ["postId", "title", "createdAt", [sequelize.literal("(SELECT COUNT(*) FROM likes WHERE likes.postId = Posts.postId)"), "likeCount"]],
-      group: ["Posts.postId"], // 그룹화하여 중복 제거
-      order: [[sequelize.literal("likeCount"), "DESC"]],
-      raw: true,
-    });
-    return posts;
+    try {
+      const posts = await Posts.findAll({
+        include: [
+          {
+            model: Users,
+            attributes: ["nickname"],
+          },
+        ],
+        attributes: ["postId", "title", "createdAt", [Sequelize.literal("(SELECT COUNT(*) FROM likes WHERE likes.postId = Posts.postId)"), "likeCount"]],
+        group: ["Posts.postId"], // 그룹화하여 중복 제거
+        order: [[Sequelize.literal("likeCount"), "DESC"]],
+        raw: true,
+      });
+      return posts;
+    } catch (error) {
+      console.error("오류 발생:", error);
+      return []; // 빈 배열 반환 또는 오류 처리 방식을 수정해주세요.
+    }
   };
 
   getByPostId = async (postId) => {
@@ -32,7 +37,7 @@ class PostsRepository {
         },
         {
           model: Like,
-          attributes: [[sequelize.fn("COUNT", sequelize.col("id")), "likeCount"]],
+          attributes: [[Sequelize.fn("COUNT", Sequelize.col("id")), "likeCount"]],
         },
       ],
       attributes: ["postId", "UserId", "title", "content", "createdAt"],
@@ -56,7 +61,7 @@ class PostsRepository {
       { title, content },
       {
         where: {
-          [Op.and]: [{ postId }, { UserId }],
+          [Op.and]: [{ postId }],
         },
       }
     );

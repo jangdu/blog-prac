@@ -28,17 +28,17 @@ class Users extends Model<InferAttributes<Users>, InferCreationAttributes<Users>
   }
 
   static associate() {
-    this.hasMany(Posts, {
+    Users.hasMany(Posts, {
       sourceKey: "userId",
       foreignKey: "UserId",
     });
 
-    this.hasMany(Comments, {
+    Users.hasMany(Comments, {
       sourceKey: "userId",
       foreignKey: "UserId",
     });
 
-    this.hasMany(Like, {
+    Users.hasMany(Like, {
       sourceKey: "userId",
       foreignKey: "userId",
     });

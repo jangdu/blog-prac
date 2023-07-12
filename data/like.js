@@ -1,4 +1,5 @@
 const { Users, Posts, Like, sequelize } = require("../models");
+const { Sequelize } = require("sequelize");
 
 class LikeRepository {
   getByPostIdandUserId = async (postId, userId) => {
@@ -11,26 +12,18 @@ class LikeRepository {
   };
 
   getPostsByUserId = async (userId) => {
-    const likedPosts = await Like.findAll({
-      where: { userId },
-      include: [
-        {
-          model: Posts,
-          include: [
-            {
-              model: Users,
-              attributes: ["nickname"],
-            },
-          ],
-          attributes: ["postId", "title", "createdAt", [sequelize.literal("(SELECT COUNT(*) FROM likes WHERE Post.postId = postId)"), "likeCount"]],
-          group: ["Posts"], // 그룹화하여 중복 제거
-          order: [[sequelize.literal("likeCount"), "DESC"]],
-        },
-      ],
-      attributes: [],
-    });
+    try {
+      const posts = await Like.findAll({
+        where: userId,
+      });
+      console.log(posts);
+      return posts;
 
-    return likedPosts;
+      // return likedPosts;
+    } catch (error) {
+      console.error("오류 발생:", error);
+      return []; // 빈 배열 반환 또는 오류 처리 방식을 수정해주세요.
+    }
   };
 
   create = async (postId, userId) => {

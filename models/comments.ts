@@ -22,12 +22,12 @@ class Comments extends Model<InferAttributes<Comments>, InferCreationAttributes<
 
   static associate() {
     // define association here
-    this.belongsTo(Users, {
+    Comments.belongsTo(Users, {
       targetKey: "userId",
       foreignKey: "UserId",
     });
 
-    this.belongsTo(Posts, {
+    Comments.belongsTo(Posts, {
       targetKey: "postId",
       foreignKey: "PostId",
     });

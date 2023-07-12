@@ -49,15 +49,15 @@ class Posts extends sequelize_1.Model {
     }
     static associate() {
         // define association here
-        Posts.belongsTo(users_1.default, {
+        this.belongsTo(users_1.default, {
             targetKey: "userId",
             foreignKey: "UserId",
         });
-        Posts.hasMany(comments_1.default, {
+        this.hasMany(comments_1.default, {
             sourceKey: "postId",
             foreignKey: "PostId",
         });
-        Posts.hasMany(like_1.default, {
+        this.hasMany(like_1.default, {
             sourceKey: "postId",
             foreignKey: "postId",
         });

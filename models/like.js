@@ -47,11 +47,11 @@ class Like extends sequelize_1.Model {
         });
     }
     static associate() {
-        Like.belongsTo(users_1.default, {
+        this.belongsTo(users_1.default, {
             targetKey: "userId",
             foreignKey: "userId",
         });
-        Like.belongsTo(posts_1.default, {
+        this.belongsTo(posts_1.default, {
             targetKey: "postId",
             foreignKey: "postId",
         });
