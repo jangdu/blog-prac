@@ -28,39 +28,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = __importStar(require("sequelize"));
 const users_1 = __importDefault(require("./users"));
-const comments_1 = __importDefault(require("./comments"));
-const like_1 = __importDefault(require("./like"));
-class Posts extends sequelize_1.Model {
+const posts_1 = __importDefault(require("./posts"));
+class Comments extends sequelize_1.Model {
     static initiate(sequelize) {
-        Posts.init({
-            postId: {
-                allowNull: false,
-                autoIncrement: true,
-                primaryKey: true,
-                type: sequelize_1.default.INTEGER,
-            },
+        Comments.init({
             UserId: sequelize_1.default.INTEGER,
-            title: sequelize_1.default.STRING,
-            content: sequelize_1.default.STRING,
+            PostId: sequelize_1.default.INTEGER,
+            comment: sequelize_1.default.STRING,
         }, {
             sequelize,
-            modelName: "Posts",
+            modelName: "Comments",
         });
     }
     static associate() {
         // define association here
-        this.belongsTo(users_1.default, {
+        Comments.belongsTo(users_1.default, {
             targetKey: "userId",
             foreignKey: "UserId",
         });
-        this.hasMany(comments_1.default, {
-            sourceKey: "postId",
+        Comments.belongsTo(posts_1.default, {
+            targetKey: "postId",
             foreignKey: "PostId",
-        });
-        this.hasMany(like_1.default, {
-            sourceKey: "postId",
-            foreignKey: "postId",
         });
     }
 }
-exports.default = Posts;
+exports.default = Comments;

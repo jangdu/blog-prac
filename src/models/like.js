@@ -27,38 +27,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = __importStar(require("sequelize"));
+const users_1 = __importDefault(require("./users"));
 const posts_1 = __importDefault(require("./posts"));
-const comments_1 = __importDefault(require("./comments"));
-const like_1 = __importDefault(require("./like"));
-class Users extends sequelize_1.Model {
+class Like extends sequelize_1.Model {
     static initiate(sequelize) {
-        Users.init({
-            userId: {
-                primaryKey: true,
+        Like.init({
+            id: {
                 allowNull: false,
                 autoIncrement: true,
+                primaryKey: true,
                 type: sequelize_1.default.INTEGER,
             },
-            nickname: sequelize_1.default.STRING,
-            password: sequelize_1.default.STRING,
+            userId: sequelize_1.default.INTEGER,
+            postId: sequelize_1.default.INTEGER,
         }, {
             sequelize,
-            modelName: "Users",
+            modelName: "Like",
+            tableName: "likes", // 테이블명 설정 (기본값: 모델명의 복수형)
         });
     }
     static associate() {
-        this.hasMany(posts_1.default, {
-            sourceKey: "userId",
-            foreignKey: "UserId",
-        });
-        this.hasMany(comments_1.default, {
-            sourceKey: "userId",
-            foreignKey: "UserId",
-        });
-        this.hasMany(like_1.default, {
-            sourceKey: "userId",
+        Like.belongsTo(users_1.default, {
+            targetKey: "userId",
             foreignKey: "userId",
+        });
+        Like.belongsTo(posts_1.default, {
+            targetKey: "postId",
+            foreignKey: "postId",
         });
     }
 }
-exports.default = Users;
+exports.default = Like;

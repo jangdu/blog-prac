@@ -28,10 +28,10 @@ const dotenv = __importStar(require("dotenv"));
 dotenv.config();
 exports.config = {
     development: {
-        username: "admin",
-        password: "!272422jdj",
-        database: "blog_db",
-        host: "database-1.chuvs2bdhmq1.ap-northeast-2.rds.amazonaws.com",
-        dialect: "mysql",
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        host: process.env.DB_HOST,
+        dialect: process.env.DB_DIALECT,
     },
 };

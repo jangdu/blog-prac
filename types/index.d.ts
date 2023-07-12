@@ -1,4 +1,4 @@
-import IUser from "../models/users";
+import IUser from "../src/models/users";
 
 declare global {
   interface Error {
