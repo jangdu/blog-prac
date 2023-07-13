@@ -8,6 +8,11 @@ class AuthRepository {
   jwtExpiresInDays = "2d"; // 기간
   bcryptSaltRounds = 12; // 길이
 
+  getById = async (userId) => {
+    const existsUsers = await Users.findOne({ where: { userId } });
+    return existsUsers;
+  };
+
   getByNickname = (nickname) => {
     const existsUsers = Users.findAll({
       where: {
