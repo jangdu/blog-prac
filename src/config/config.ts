@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-interface development {
+interface Development {
   username: string;
   password: string;
   database: string;
@@ -10,12 +10,17 @@ interface development {
   dialect: string;
 }
 
-export const config = {
+interface Config {
+  development: Development;
+  // 다른 환경에 대한 속성 정의
+}
+
+export const config: Config = {
   development: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
+    username: process.env.DB_USERNAME || "",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_DATABASE || "",
+    host: process.env.DB_HOST || "",
+    dialect: "mysql",
   },
 };

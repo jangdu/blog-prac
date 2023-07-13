@@ -16,7 +16,7 @@ const like_1 = __importDefault(require("./like"));
 exports.Like = like_1.default;
 // const env = (process.env.NODE_ENV as "production" | "test") || "development";
 // const config = config;
-const sequelize = new sequelize_1.default.Sequelize(config_1.config.development.database, config_1.config.development.username, config_1.config.development.password, { host: config_1.config.development.host, dialect: config_1.config.development.dialect });
+const sequelize = new sequelize_1.default.Sequelize(config_1.config.development.database, config_1.config.development.username, config_1.config.development.password, { host: config_1.config.development.host, dialect: "mysql" });
 users_1.default.initiate(sequelize);
 posts_1.default.initiate(sequelize);
 comments_1.default.initiate(sequelize);

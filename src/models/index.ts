@@ -9,7 +9,7 @@ import Like from "./like";
 // const env = (process.env.NODE_ENV as "production" | "test") || "development";
 // const config = config;
 
-const sequelize = new Sequelize.Sequelize(config.development.database, config.development.username, config.development.password, { host: config.development.host, dialect: config.development.dialect });
+const sequelize = new Sequelize.Sequelize(config.development.database, config.development.username, config.development.password, { host: config.development.host, dialect: "mysql" });
 
 Users.initiate(sequelize);
 Posts.initiate(sequelize);
