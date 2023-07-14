@@ -1,18 +1,33 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-const app = express();
-const port = 3000;
+import router from "./routes/index.js";
 
-app.use(cors({ origin: true, credentials: true }));
-app.use(express.json());
+class App {
+  private app = express();
+  private port = 3000 || process.env.SERVER_PORT;
 
-const routes = require("./routes/index");
-app.use(routes);
+  constructor() {
+    this.setup();
+    this.routes();
+  }
 
-app.get("/", (req: Request, res: Response) => {
-  res.json("blog-api");
-});
+  private setup(): void {
+    this.app.use(cors({ origin: true, credentials: true }));
+    this.app.use(express.json());
+  }
 
-app.listen(port, () => {
-  console.log(port, "포트: 서버열림");
-});
+  private routes(): void {
+    this.app.get("/", (req: Request, res: Response) => {
+      res.json("blog-api");
+    });
+    // this.app.use(router);
+  }
+
+  public start(): void {
+    this.app.listen(this.port, () => {
+      console.log(this.port, "포트: 서버열림");
+    });
+  }
+}
+
+export default App;

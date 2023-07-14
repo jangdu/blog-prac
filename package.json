@@ -6,7 +6,7 @@
   "target": "es2016",
   "scripts": {
     "test": "DOTENV_CONFIG_PATH=./.env.test jest --watchAll",
-    "start": "nodemon src/app.js"
+    "start": "nodemon src/index.js"
   },
   "keywords": [],
   "author": "",
