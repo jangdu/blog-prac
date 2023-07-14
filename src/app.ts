@@ -17,10 +17,10 @@ class App {
   }
 
   private routes(): void {
+    this.app.use(router);
     this.app.get("/", (req: Request, res: Response) => {
       res.json("blog-api");
     });
-    // this.app.use(router);
   }
 
   public start(): void {
