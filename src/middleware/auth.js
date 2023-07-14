@@ -23,9 +23,7 @@ class AuthMiddleware {
         return res.status(403).json({ message: "전달 된 쿠키에서 오류가 발생하였습니다." });
       }
 
-      console.log(decoded);
       const existsUsers = await this.authRepository.getById(decoded.id);
-      console.log(existsUsers);
 
       if (!existsUsers) {
         return res.status(404).json({ message: "해당하는 유저가 존재하지 않습니다." });
