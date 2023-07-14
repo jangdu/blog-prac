@@ -9,7 +9,8 @@ class AuthRepository {
   bcryptSaltRounds = 12; // 길이
 
   getById = async (userId) => {
-    const existsUsers = await Users.findOne({ where: { userId } });
+    console.log(userId);
+    const existsUsers = await Users.findByPk(userId);
     return existsUsers;
   };
 

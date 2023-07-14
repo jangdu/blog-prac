@@ -7,6 +7,7 @@ const AuthRepository = require("../data/auth");
 class AuthMiddleware {
   AUTH_ERROR = { message: "로그인이 필요한 기능입니다." };
   authRepository = new AuthRepository();
+
   isAuth = async (req, res, next) => {
     const authHeader = req.get("Authorization");
     if (!(authHeader && authHeader.startsWith("Bearer "))) {
@@ -24,9 +25,10 @@ class AuthMiddleware {
 
       console.log(decoded);
       const existsUsers = await this.authRepository.getById(decoded.id);
+      console.log(existsUsers);
 
       if (!existsUsers) {
-        return res.status(404).json({ message: "잘못된 UserId" });
+        return res.status(404).json({ message: "해당하는 유저가 존재하지 않습니다." });
       }
 
       req.userId = decoded.id;
