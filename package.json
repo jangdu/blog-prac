@@ -6,7 +6,8 @@
   "target": "es2016",
   "scripts": {
     "test": "DOTENV_CONFIG_PATH=./.env.test jest --watchAll --config=jest.config.js",
-    "start": "nodemon"
+    "start": "nodemon",
+    "typeorm": "ts-node --r ts-node/register ./node_modules/typeorm/cli.js -d ormconfig.ts"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "sequelize": "^6.32.1",
     "ts-node": "^10.9.1",
     "typeorm": "^0.3.17",
+    "typeorm-model-generator": "^0.4.6",
     "typescript": "^5.1.6",
     "uuid": "^9.0.0"
   },

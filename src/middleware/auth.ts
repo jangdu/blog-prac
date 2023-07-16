@@ -1,14 +1,16 @@
+import { NextFunction, Request, Response } from "express";
 const jwt = require("jsonwebtoken");
-
-const { Op } = require("sequelize");
-const { Users } = require("../models");
 const AuthRepository = require("../data/auth");
+
+interface authReq extends Request {
+  userId: string;
+}
 
 class AuthMiddleware {
   AUTH_ERROR = { message: "로그인이 필요한 기능입니다." };
   authRepository = new AuthRepository();
 
-  isAuth = async (req, res, next) => {
+  isAuth = async (req: authReq, res: Response, next: NextFunction) => {
     const authHeader = req.get("Authorization");
     if (!(authHeader && authHeader.startsWith("Bearer "))) {
       return res.status(401).json(this.AUTH_ERROR);
@@ -21,12 +23,6 @@ class AuthMiddleware {
       const decoded = await jwt.verify(token, "MPVjj3#we9DS4oV6mm8a$$6b9tqv4wMu");
       if (!decoded.id || !decoded) {
         return res.status(403).json({ message: "전달 된 쿠키에서 오류가 발생하였습니다." });
-      }
-
-      const existsUsers = await this.authRepository.getById(decoded.id);
-
-      if (!existsUsers) {
-        return res.status(404).json({ message: "해당하는 유저가 존재하지 않습니다." });
       }
 
       req.userId = decoded.id;
