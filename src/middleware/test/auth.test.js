@@ -3,7 +3,7 @@ import AuthMiddleware from "../auth";
 import jwt from "jsonwebtoken";
 import faker from "faker";
 import { Users } from "../../models";
-import AuthRepository from "../../data/auth";
+import AuthRepository from "../../data/user.repository";
 
 jest.mock("jsonwebtoken");
 jest.mock("../../data/auth");

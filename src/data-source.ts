@@ -12,8 +12,8 @@ export const AppDataSource = new DataSource({
   password: "!272422jdj",
   database: "typeORM_blog",
   synchronize: true,
-  logging: true,
-  entities: [User, Post, Comment],
+  logging: false,
+  entities: ["./entity/*.ts"],
   migrations: [],
   subscribers: [],
 });

@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
-import router from "./routes/index.js";
+import { router } from "./routes/index";
 
 class App {
   private app = express();

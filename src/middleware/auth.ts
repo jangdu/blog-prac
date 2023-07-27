@@ -1,6 +1,7 @@
+import { getCustomRepository } from "typeorm";
 import { NextFunction, Request, Response } from "express";
 const jwt = require("jsonwebtoken");
-const AuthRepository = require("../data/auth");
+import UserRepository from "../data/user.repository";
 
 interface authReq extends Request {
   userId: string;
@@ -8,7 +9,7 @@ interface authReq extends Request {
 
 class AuthMiddleware {
   AUTH_ERROR = { message: "로그인이 필요한 기능입니다." };
-  authRepository = new AuthRepository();
+  userRepository = getCustomRepository(UserRepository);
 
   isAuth = async (req: authReq, res: Response, next: NextFunction) => {
     const authHeader = req.get("Authorization");
