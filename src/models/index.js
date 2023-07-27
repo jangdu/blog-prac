@@ -1,0 +1,27 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Like = exports.Comments = exports.Posts = exports.Users = void 0;
+const sequelize_1 = __importDefault(require("sequelize"));
+const config_1 = require("../config/config");
+const users_1 = __importDefault(require("./users"));
+exports.Users = users_1.default;
+const posts_1 = __importDefault(require("./posts"));
+exports.Posts = posts_1.default;
+const comments_1 = __importDefault(require("./comments"));
+exports.Comments = comments_1.default;
+const like_1 = __importDefault(require("./like"));
+exports.Like = like_1.default;
+// const env = (process.env.NODE_ENV as "production" | "test") || "development";
+// const config = config;
+const sequelize = new sequelize_1.default.Sequelize(config_1.config.development.database, config_1.config.development.username, config_1.config.development.password, { host: config_1.config.development.host, dialect: "mysql" });
+users_1.default.initiate(sequelize);
+posts_1.default.initiate(sequelize);
+comments_1.default.initiate(sequelize);
+like_1.default.initiate(sequelize);
+users_1.default.associate();
+posts_1.default.associate();
+comments_1.default.associate();
+like_1.default.associate();
